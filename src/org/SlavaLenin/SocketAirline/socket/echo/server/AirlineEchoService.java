@@ -1,8 +1,8 @@
 package org.SlavaLenin.SocketAirline.socket.echo.server;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,23 +12,21 @@ import org.SlavaLenin.SocketAirline.socket.echo.server.data.AirlineFlight;
 import org.SlavaLenin.SocketAirline.socket.echo.server.data.AirlineFlightDTO;
 import org.SlavaLenin.SocketAirline.socket.echo.server.data.errors.NoMoreSeatsException;
 
-import com.google.gson.Gson;
 
 
 
 public class AirlineEchoService extends Thread{
-	private DataInputStream in;
-	private DataOutputStream out;
+	private ObjectInputStream in;
+	private ObjectOutputStream out;
 	private Socket tcpSocket;
 	private HashMap<Integer, AirlineFlight> flights;
-	Gson gson = new Gson();
 
 
 	public AirlineEchoService(Socket socket) {
 		try {
 			this.tcpSocket = socket;
-		    this.in = new DataInputStream(socket.getInputStream());
-			this.out = new DataOutputStream(socket.getOutputStream());
+		    this.in = new ObjectInputStream(socket.getInputStream());
+			this.out = new ObjectOutputStream(socket.getOutputStream());
 			this.start();
 
 			flights = new HashMap<Integer, AirlineFlight>();
@@ -78,9 +76,7 @@ public class AirlineEchoService extends Thread{
 				case("BUSCAR"):
 					resultSearch = buscar(values[1]);
 					if(!resultSearch.isEmpty()) {
-						String json = gson.toJson(resultSearch);
-						this.out.writeUTF(json);
-						System.out.println(json);
+						this.out.writeObject(resultSearch);
 					}else{
 						this.out.writeUTF("NULLSEARCH");			
 					}
