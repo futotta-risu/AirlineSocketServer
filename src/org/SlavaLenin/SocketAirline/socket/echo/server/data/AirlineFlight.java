@@ -90,9 +90,9 @@ private final String[] airportCodes = {"BILB","BARC","MADR","BUDA","PARI","BTCH"
 		this.filledseats = filledseats + 1;
 	}
 	
-	public AirlineFlightDTO assemble() {
+	public SocketAirlineFlightDTO assemble() {
         
-		return new AirlineFlightDTO(this.flightNumber, this.dateDeparture, this.dateArrival,
+		return new SocketAirlineFlightDTO(this.flightNumber, this.dateDeparture, this.dateArrival,
 		        this.airportDeparture, this.airportArrival, this.seats, this.filledseats);
 	}
 

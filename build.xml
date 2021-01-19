@@ -7,6 +7,10 @@
 	
 	<property name="server.port" value="8001"/>
 	
+
+	<property name="dist.dir" location="dist"/>
+	<property name="export.file" value="AirlineSocketManager.jar"/>
+	
 	<target name="1.compile" description="Builds the source code">
 		<delete dir="${build.dir}"/>
 		<mkdir dir="${build.dir}"/>
@@ -18,4 +22,14 @@
 	 		<arg value="${server.port}"/> 
         </java>
     </target>
+	
+	<target name="3.export" depends="1.compile" description="Export classes into a .jar file">
+			<delete dir="${dist.dir}"/>
+			<mkdir dir="${dist.dir}"/>
+			<jar destfile="${dist.dir}/${export.file}" >
+				<fileset dir="${build.dir}">
+					<include name="**/SocketAirlineFlightDTO.class"/>
+				</fileset>
+			</jar>
+		</target>	
 </project>

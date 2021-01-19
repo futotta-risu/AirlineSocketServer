@@ -1,5 +1,6 @@
 package org.SlavaLenin.SocketAirline.socket.echo.server;
 
+import java.io.DataInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -9,26 +10,30 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.SlavaLenin.SocketAirline.socket.echo.server.data.AirlineFlight;
-import org.SlavaLenin.SocketAirline.socket.echo.server.data.AirlineFlightDTO;
+import org.SlavaLenin.SocketAirline.socket.echo.server.data.SocketAirlineFlightDTO;
 import org.SlavaLenin.SocketAirline.socket.echo.server.data.errors.NoMoreSeatsException;
 
 
 
 
 public class AirlineEchoService extends Thread{
-	private ObjectInputStream in;
+	private DataInputStream in;
 	private ObjectOutputStream out;
 	private Socket tcpSocket;
 	private HashMap<Integer, AirlineFlight> flights;
 
 
 	public AirlineEchoService(Socket socket) {
+		System.out.println("PRIMER CLIENTE");
 		try {
 			this.tcpSocket = socket;
-		    this.in = new ObjectInputStream(socket.getInputStream());
+			System.out.println("PRIMER CLIENTE - 3");
+		    this.in = new DataInputStream(socket.getInputStream());
+		    System.out.println("PRIMER CLIENTE - 5");
 			this.out = new ObjectOutputStream(socket.getOutputStream());
+			System.out.println("PRIMER CLIENTE - 7");
 			this.start();
-
+			System.out.println("PRIMER CLIENTE - 9");
 			flights = new HashMap<Integer, AirlineFlight>();
 			for(int i = 0; i < 10; i++) {
 				AirlineFlight f = new AirlineFlight();
@@ -50,9 +55,10 @@ public class AirlineEchoService extends Thread{
 		}
 	}
 
-	public List<AirlineFlightDTO> buscar(String id){
-		
-		List<AirlineFlightDTO> flightList = new LinkedList<AirlineFlightDTO>();
+	public List<SocketAirlineFlightDTO> buscar(String id){
+		System.out.println("La id de buscar " + id);
+		System.out.println("Tiene el tamanio " + flights.size());
+		List<SocketAirlineFlightDTO> flightList = new LinkedList<SocketAirlineFlightDTO>();
 		for(AirlineFlight f : flights.values()) 
 			if(f.getFligthNumber() > Integer.valueOf(id))
 				flightList.add(f.assemble());
@@ -63,7 +69,7 @@ public class AirlineEchoService extends Thread{
 
 	public void run() {
 		
-		List<AirlineFlightDTO> resultSearch = new ArrayList<AirlineFlightDTO>();
+		List<SocketAirlineFlightDTO> resultSearch = new ArrayList<SocketAirlineFlightDTO>();
 		//Echo server
 		try {
 			//Read request from the client
@@ -75,7 +81,10 @@ public class AirlineEchoService extends Thread{
 			switch(values[0]) {
 				case("BUSCAR"):
 					resultSearch = buscar(values[1]);
+					System.out.println("1: " + values[1]);
 					if(!resultSearch.isEmpty()) {
+						System.out.println("2: " + resultSearch);
+						System.out.println("3: " + resultSearch.size());
 						this.out.writeObject(resultSearch);
 					}else{
 						this.out.writeUTF("NULLSEARCH");			

@@ -1,9 +1,10 @@
 package org.SlavaLenin.SocketAirline.socket.echo.server.data;
 
+
 import java.io.Serializable;
 import java.util.Date;
 
-public class AirlineFlightDTO implements Serializable {
+public class SocketAirlineFlightDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int fligthNumber;
@@ -18,7 +19,7 @@ public class AirlineFlightDTO implements Serializable {
 	private int totalSeats, filledSeats;
 	
 
-	public AirlineFlightDTO(int fligthNumber, Date dateDeparture, Date dateArrival, 
+	public SocketAirlineFlightDTO(int fligthNumber, Date dateDeparture, Date dateArrival, 
 	        String airportDeparture, String airportArrival, int totalSeats, int filledSeats) {
 	    super();
 	    this.fligthNumber = fligthNumber;
