@@ -16,11 +16,11 @@ public class SocketAirlineFlightDTO implements Serializable {
 	 */
 	private String airportDeparture, airportArrival;
 
-	private int totalSeats, filledSeats;
+	private int totalSeats, filledSeats, price;
 	
 
 	public SocketAirlineFlightDTO(int fligthNumber, Date dateDeparture, Date dateArrival, 
-	        String airportDeparture, String airportArrival, int totalSeats, int filledSeats) {
+	        String airportDeparture, String airportArrival, int totalSeats, int filledSeats, int price) {
 	    super();
 	    this.fligthNumber = fligthNumber;
 	    this.dateDeparture = dateDeparture;
@@ -28,6 +28,7 @@ public class SocketAirlineFlightDTO implements Serializable {
 	    this.airportDeparture = airportDeparture;
 	    this.airportArrival = airportArrival;
 	    this.filledSeats = filledSeats;
+	    this.price = price;
 	}
 	
 	
@@ -102,6 +103,18 @@ public class SocketAirlineFlightDTO implements Serializable {
 
 	public void setFilledSeats(int filledSeats) {
 		this.filledSeats = filledSeats;
+	}
+
+
+
+	public int getPrice() {
+		return price;
+	}
+
+
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 	
 

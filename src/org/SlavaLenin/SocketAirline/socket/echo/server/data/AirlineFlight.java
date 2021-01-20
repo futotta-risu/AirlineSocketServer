@@ -19,7 +19,7 @@ private final String[] airportCodes = {"BILB","BARC","MADR","BUDA","PARI","BTCH"
 	private String airportDeparture, airportArrival;
 
 	
-	private int seats=100, filledseats=0;
+	private int seats=100, filledseats=0, price;
 	
 	public AirlineFlight() {
 		this.flightNumber = ++flightID;
@@ -32,6 +32,7 @@ private final String[] airportCodes = {"BILB","BARC","MADR","BUDA","PARI","BTCH"
 		int airportArrivalCode =  (airportDepartureCode * permutationCode) % 7;
 		airportDeparture = airportCodes[airportDepartureCode - 1];
 		airportArrival = airportCodes[airportArrivalCode - 1];
+		this.price = Math.abs(rnd.nextInt() % 50);
 	}
 
 	public int getFligthNumber() {
@@ -85,15 +86,17 @@ private final String[] airportCodes = {"BILB","BARC","MADR","BUDA","PARI","BTCH"
 	}
 	
 	public void fillSeat() throws NoMoreSeatsException{
+		System.out.println("The flight " + flightNumber + " has " + filledseats + " free seats.");
 		if(1 + this.filledseats > this.seats) 
 			throw new NoMoreSeatsException("El maximo numero de asiento sobrepasado.");
 		this.filledseats = filledseats + 1;
+		System.out.println("Updated: The flight " + flightNumber + " has " + filledseats + " free seats.");
 	}
 	
 	public SocketAirlineFlightDTO assemble() {
         
 		return new SocketAirlineFlightDTO(this.flightNumber, this.dateDeparture, this.dateArrival,
-		        this.airportDeparture, this.airportArrival, this.seats, this.filledseats);
+		        this.airportDeparture, this.airportArrival, this.seats, this.filledseats, this.price);
 	}
 
 	public int getFlightNumber() {
@@ -126,5 +129,13 @@ private final String[] airportCodes = {"BILB","BARC","MADR","BUDA","PARI","BTCH"
 				+ ", dateDeparture=" + dateDeparture + ", dateArrival=" + dateArrival + ", airportDeparture="
 				+ airportDeparture + ", airportArrival=" + airportArrival + ", seats=" + seats + ", filledseats="
 				+ filledseats + "]";
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 }
