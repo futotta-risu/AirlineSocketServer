@@ -11,7 +11,7 @@ public class AirlineEchoServer {
 			System.exit(1);
 		}
 		
-		//args[1] = Server socket port
+		//args[0] = Server socket port
 		int serverPort = Integer.parseInt(args[0]);
 		
 		/**
@@ -21,15 +21,10 @@ public class AirlineEchoServer {
 		 * Any object that implements java.lang.AutoCloseable, which includes all objects which implement java.io.Closeable, 
 		 * can be used as a resource.
 		 */
-		
-		//Declaration of the ServerSocket (only a port number is needed)
 		try (ServerSocket tcpEchoServerSocket = new ServerSocket(serverPort);) {
 			System.out.println(" - EchoServer: Waiting for connections '" + tcpEchoServerSocket.getInetAddress().getHostAddress() + ":" + tcpEchoServerSocket.getLocalPort() + "' ...");
 			
-			//The main thread is always waiting for connections
 			while (true) {
-				//When a connection from a client is received, a new EchoService is created. The "accept()" method returns the socket to
-				//communicate with the client.
 				new AirlineEchoService(tcpEchoServerSocket.accept());
 				System.out.println(" - EchoServer: New client connection accepted. Client Number: " + numClients++);
 			}
