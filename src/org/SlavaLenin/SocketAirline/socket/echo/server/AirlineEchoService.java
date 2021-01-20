@@ -17,44 +17,47 @@ public class AirlineEchoService extends Thread{
 	private DataInputStream in;
 	private ObjectOutputStream out;
 	private Socket tcpSocket;
-	private HashMap<Integer, AirlineFlight> flights;
-
 
 	public AirlineEchoService(Socket socket) {
 		try {
-			
 			this.tcpSocket = socket;
 		    this.in = new DataInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(socket.getOutputStream());
 			this.start();
 			
-			flights = new HashMap<Integer, AirlineFlight>();
-			for(int i = 0; i < 10; i++) {
-				AirlineFlight f = new AirlineFlight();
-				flights.put(f.getFligthNumber(), f);
-			}
-			
 		} catch (Exception e) {
 			System.out.println("# EchoService - TCPConnection IO error:" + e.getMessage());
 		}
+		
 	}
 	
 	public void reservar(String id) throws Exception{
-		if(!flights.containsKey(Integer.valueOf(id)))
+		AirlineFlight flight = AirlineDBManager.getInstance().getFlight(id);
+		if(flight == null)
 			throw new Exception("ID not found in KoreanAirline");
 		
 		try {
-			flights.get(Integer.valueOf(id)).fillSeat();
+			flight.fillSeat();
 		} catch (NoMoreSeatsException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public SocketAirlineFlightDTO buscarVuelo(String id) {
+		System.out.println("La id de buscar " + id);
+		
+		AirlineFlight flight = AirlineDBManager.getInstance().getFlight(id);
+			
+		System.out.println("- Se ha buscado y devuelto " + flight + " viajes");
+		return flight.assemble();
+	}
 
 	public List<SocketAirlineFlightDTO> buscar(String id){
 		System.out.println("La id de buscar " + id);
-		System.out.println("Tiene el tamanio " + flights.size());
+		
 		List<SocketAirlineFlightDTO> flightList = new LinkedList<SocketAirlineFlightDTO>();
-		for(AirlineFlight f : flights.values()) 
+		
+		for(AirlineFlight f : AirlineDBManager.getInstance().getFlights()) 
 			if(f.getFligthNumber() > Integer.valueOf(id))
 				flightList.add(f.assemble());
 		
@@ -63,7 +66,7 @@ public class AirlineEchoService extends Thread{
 	}
 
 	public void run() {
-		
+		System.out.println(" - Comenzando el proceso de run en el service.");
 		List<SocketAirlineFlightDTO> resultSearch = new ArrayList<SocketAirlineFlightDTO>();
 		//Echo server
 		try {
@@ -75,21 +78,27 @@ public class AirlineEchoService extends Thread{
 			
 			switch(values[0]) {
 				case("BUSCAR"):
+					System.out.println(" - Ejecutando la secuencia de comandos de buscar");
 					resultSearch = buscar(values[1]);
 					if(!resultSearch.isEmpty()) {
 						this.out.writeObject(resultSearch);
 					}else{
 						this.out.writeUTF("NULLSEARCH");			
 					}
-				
+					break;
 				case("RESERVAR"):
+					System.out.println(" - Ejecutando la secuencia de comandos de reservar");
 					try {
 						reservar(values[1]);
 						this.out.writeUTF("OK_RESERVA " + values[1]);
 					}catch (Exception e) {
 						this.out.writeUTF("FALLO_RESERVA");			
 					}
-				
+					break;
+				case("BUSCARVUELO"):
+					System.out.println(" - Ejecutando la secuencia de comandos de buscarvuelo");
+					this.out.writeObject(buscarVuelo(values[1])); 
+					break;
 			}
 					
 			System.out.println("   - EchoService - Sent data to '" + tcpSocket.getInetAddress().getHostAddress() + ":" + tcpSocket.getPort() + "' -> '" + data.toUpperCase() + "'");
