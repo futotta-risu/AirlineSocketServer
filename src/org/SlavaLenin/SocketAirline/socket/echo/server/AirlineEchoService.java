@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -107,6 +106,16 @@ public class AirlineEchoService extends Thread{
 						this.out.writeUTF("OK_RESERVA " + values[1]);
 					}catch (Exception e) {
 						this.out.writeUTF("FALLO_RESERVA");			
+					}
+					break;
+					
+				case("CANCELAR"):
+					System.out.println(" - Ejecutando la secuencia de comandos de cancelar");
+					try {
+						cancelarReserva(values[1]);
+						this.out.writeUTF("OK_CANCELAR_RESERVA " + values[1]);
+					}catch (Exception e) {
+						this.out.writeUTF("FALLO_CANCELAR_RESERVA");			
 					}
 					break;
 				case("BUSCARVUELO"):
