@@ -34,7 +34,7 @@ public class AirlineEchoService extends Thread{
 	public void reservar(String id) throws Exception{
 		AirlineFlight flight = AirlineDBManager.getInstance().getFlight(id);
 		if(flight == null)
-			throw new Exception("ID not found in KoreanAirline");
+			throw new Exception("ID not found in AirFrance Airline");
 		
 		try {
 			flight.fillSeat();
@@ -42,6 +42,20 @@ public class AirlineEchoService extends Thread{
 			e.printStackTrace();
 		}
 	}
+	
+	public void cancelarReserva(String id) throws Exception{
+		AirlineFlight flight = AirlineDBManager.getInstance().getFlight(id);
+		if(flight == null)
+			throw new Exception("ID not found in AirFrance Airline");
+		try {
+			flight.fillSeat(-1);
+		} catch (NoMoreSeatsException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	
 	public SocketAirlineFlightDTO buscarVuelo(String id) {
 		System.out.println("La id de buscar " + id);
